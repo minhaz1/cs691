@@ -1,6 +1,0 @@
-\\psf\Google Drive\cs691\workspace\Assignment1\Assignment1\bin\Debug\Assignment1.exe.config
-\\psf\Google Drive\cs691\workspace\Assignment1\Assignment1\bin\Debug\Assignment1.exe
-\\psf\Google Drive\cs691\workspace\Assignment1\Assignment1\bin\Debug\Assignment1.pdb
-\\psf\Google Drive\cs691\workspace\Assignment1\Assignment1\obj\Debug\Assignment1.csprojResolveAssemblyReference.cache
-\\psf\Google Drive\cs691\workspace\Assignment1\Assignment1\obj\Debug\Assignment1.exe
-\\psf\Google Drive\cs691\workspace\Assignment1\Assignment1\obj\Debug\Assignment1.pdb
