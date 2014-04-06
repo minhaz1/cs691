@@ -1,0 +1,200 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>HomeOS.Hub.Common.Bolt.DataStore</name>
+    </assembly>
+    <members>
+        <member name="M:HomeOS.Hub.Common.Bolt.DataStore.FileDataStream`1.ReadData(HomeOS.Hub.Common.Bolt.DataStore.IValue,HomeOS.Hub.Common.Bolt.DataStore.DataBlockInfo)">
+            <summary>
+            ValuePath is just the value file name ts.dat and not fully qualified file path
+            </summary>
+            <param name="valuePath"></param>
+            <param name="dbi"></param>
+            <returns></returns>
+        </member>
+        <member name="T:HomeOS.Hub.Common.Bolt.DataStore.IStream">
+            <summary>
+            Read and write data to a Windows Azure blob storage account.
+            </summary>
+        </member>
+        <member name="M:HomeOS.Hub.Common.Bolt.DataStore.IStream.Append(HomeOS.Hub.Common.Bolt.DataStore.IKey,HomeOS.Hub.Common.Bolt.DataStore.IValue,System.Int64)">
+            <summary>
+            Appends a new value to the specified key.
+            </summary>
+            <param name="key">The key to update.</param>
+            <param name="value">The value.</param>
+            <example>
+            <![CDATA[
+            IStream datastream;
+            datastream = base.CreateFileStream<StrKey, StrValue>("myStream", false);
+            StrKey key = new StrKey("myKey");
+            StrValue val = new StrValue("myVal");
+            datastream.Append(key, val);]]>
+            </example>
+        </member>
+        <member name="M:HomeOS.Hub.Common.Bolt.DataStore.IStream.Append(System.Collections.Generic.List{System.Tuple{HomeOS.Hub.Common.Bolt.DataStore.IKey,HomeOS.Hub.Common.Bolt.DataStore.IValue}})">
+            <summary>
+            Appends a list of key value pairs to the stream. Each key value pair is stored with the current timestamp.
+            </summary>
+            <param name="listOfKeyValuePairs">List of tuples, where each tuple is a key value pair.</param>
+        </member>
+        <member name="M:HomeOS.Hub.Common.Bolt.DataStore.IStream.Append(System.Collections.Generic.List{HomeOS.Hub.Common.Bolt.DataStore.IKey},HomeOS.Hub.Common.Bolt.DataStore.IValue)">
+            <summary>
+            Appends a value to all the keys provided as a list
+            </summary>
+            <param name="listOfKeys">List of keys to which the value is to be appended to</param>
+            <param name="value">Value to append</param>
+        </member>
+        <member name="M:HomeOS.Hub.Common.Bolt.DataStore.IStream.Update(HomeOS.Hub.Common.Bolt.DataStore.IKey,HomeOS.Hub.Common.Bolt.DataStore.IValue)">
+            <summary>
+            Modifies the newest value for the specified key.
+            </summary>
+            <param name="key">The key to update.</param>
+            <param name="value">The value.</param>
+            <example>
+            <![CDATA[
+            IStream datastream;
+            datastream = base.CreateFileStream<StrKey, StrValue>("myStream", false);
+            StrKey key = new StrKey("myKey");
+            StrValue val = new StrValue("myVal");
+            datastream.Put(key, val);]]>
+            </example>
+        </member>
+        <member name="M:HomeOS.Hub.Common.Bolt.DataStore.IStream.Get(HomeOS.Hub.Common.Bolt.DataStore.IKey)">
+            <summary>
+            Gets the newest value from the specified key.
+            </summary>
+            <param name="key">The key to query.</param>
+            <returns>An IValue containing the results.</returns>
+            <example>
+            <![CDATA[
+            IStream datastream;
+            datastream = base.CreateFileStream<StrKey, StrValue>("myStream", false);
+            string result = datastream.Get("myKey");]]>
+            </example>
+        </member>
+        <member name="M:HomeOS.Hub.Common.Bolt.DataStore.IStream.GetLatest">
+            <summary>
+            Gets the newest [key, value, timestamp] tuple inserted.
+            </summary>
+            <returns>The newest tuple (key, value, timestamp) that was inserted.</returns>
+            <example>
+            <![CDATA[
+            IStream datastream;
+            datastream = base.CreateFileStream<StrKey, StrValue>("myStream", false);
+            Tuple result = datastream.GetLatest();]]>
+            </example>
+        </member>
+        <member name="M:HomeOS.Hub.Common.Bolt.DataStore.IStream.GetAll(HomeOS.Hub.Common.Bolt.DataStore.IKey)">
+            <summary>
+            Get all the [key, value, ts] tuples corresponding to the specified key.
+            </summary>
+            <param name="key">The key to query.</param>
+            <returns>An IEnumerable containing the results.</returns>
+            <example>
+            <![CDATA[
+            IStream datastream;
+            datastream = base.CreateFileStream<StrKey, StrValue>("myStream", false);
+            IEnumerable result = datastream.GetAll("myKey");]]>
+            </example>
+        </member>
+        <member name="M:HomeOS.Hub.Common.Bolt.DataStore.IStream.GetAll(HomeOS.Hub.Common.Bolt.DataStore.IKey,System.Int64,System.Int64)">
+            <summary>
+            Get all the [key, value, timestamp] tuples in the given time range corresponding to the specified key.
+            </summary>
+            <param name="key">The key to query.</param>
+            <param name="startTimeStamp">The timestamp at which the range should begin.</param>
+            <param name="endTimeStamp">The timestamp at which the range should end.</param>
+            <returns>An IEnumerable containing the results.</returns>
+            <example>
+            <![CDATA[
+            IStream datastream;
+            datastream = base.CreateFileStream<StrKey, StrValue>("myStream", false);
+            DateTime fromTime = new DateTime(2001, 01, 01, 0, 0, 0, DateTimeKind.Utc);
+            DateTime rightNow = DateTime.UtcNow;
+            IEnumerable result = datastream.GetAll("myKey", fromTime, rightNow);]]>
+            </example>
+        </member>
+        <member name="M:HomeOS.Hub.Common.Bolt.DataStore.IStream.GetAllWithSkip(HomeOS.Hub.Common.Bolt.DataStore.IKey,System.Int64,System.Int64,System.Int64)">
+            <summary>
+            Get values for given key at startTimeStamp, startTimeStamp+skip, startTimeStamp+2*skip ..... endTimeStamps
+            </summary>
+            <param name="key">The required key</param>
+            <param name="startTimeStamp">The starting timestamp</param>
+            <param name="endTimeStamp">The ending or bounding timestamp</param>
+            <param name="skip">The difference between required consecutive values' timestamps</param>
+            <returns></returns>
+        </member>
+        <member name="M:HomeOS.Hub.Common.Bolt.DataStore.IStream.GetKeys(HomeOS.Hub.Common.Bolt.DataStore.IKey,HomeOS.Hub.Common.Bolt.DataStore.IKey)">
+            <summary>
+            Get a list of all keys in the specified key range.
+            </summary>
+            <param name="startKey">The key at which the range should begin.</param>
+            <param name="endKey">The key at which the range should end.</param>
+            <returns>A List containing the results.</returns>
+            <example>
+            <![CDATA[
+            IStream datastream;
+            datastream = base.CreateFileStream<StrKey, StrValue>("myStream", false);
+            IKey startKey = new IKey("begin");
+            IKey endKey = new IKey("end");
+            List result = datastream.GetKeys(startKey, endKey);]]>
+            </example>
+        </member>
+        <member name="M:HomeOS.Hub.Common.Bolt.DataStore.IStream.GrantReadAccess(System.String)">
+            <summary>
+            Grants read access to the app at the specified AppId.
+            </summary>
+            <param name="AppId">The AppId of the app to which read access should be granted.</param>
+            <returns>A boolean indicating success or failure.</returns>
+        </member>
+        <member name="M:HomeOS.Hub.Common.Bolt.DataStore.IStream.GrantReadAccess(System.String,System.String)">
+            <summary>
+            Grants read access to the app at the specified HomeId and AppId.
+            </summary>
+            <param name="HomeId">The HomeId of the app to which read access should be granted.</param>
+            <param name="AppId">The AppId of the app to which read access should be granted.</param>
+            <returns>A boolean indicating success or failure.</returns>
+        </member>
+        <member name="M:HomeOS.Hub.Common.Bolt.DataStore.IStream.RevokeReadAccess(System.String)">
+            <summary>
+            Revokes read access from the app at the specified AppId.
+            </summary>
+            <param name="AppId">The AppId of the app from which read access should be revoked.</param>
+            <returns>A boolean indicating success or failure.</returns>
+        </member>
+        <member name="M:HomeOS.Hub.Common.Bolt.DataStore.IStream.RevokeReadAccess(System.String,System.String)">
+            <summary>
+            Revokes read access from the app at the specified HomeId and AppId.
+            </summary>
+            <param name="HomeId">The HomeId of the app from which read access should be revoked.</param>
+            <param name="AppId">The AppId of the app from which read access should be revoked.</param>
+            <returns>A boolean indicating success or failure.</returns>
+        </member>
+        <member name="M:HomeOS.Hub.Common.Bolt.DataStore.IStream.Close">
+            <summary>
+            Closes the current stream.
+            </summary>
+            <returns>A boolean indicating success or failure.</returns>
+        </member>
+        <member name="M:HomeOS.Hub.Common.Bolt.DataStore.AmazonS3Synchronizer.#ctor(HomeOS.Hub.Common.Bolt.DataStore.RemoteInfo,System.String,HomeOS.Hub.Common.Bolt.DataStore.SynchronizeDirection,HomeOS.Hub.Common.Bolt.DataStore.CompressionType,HomeOS.Hub.Common.Bolt.DataStore.EncryptionType,System.Byte[],System.Byte[],HomeOS.Hub.Common.Bolt.DataStore.Logger,System.Int32,System.Int32)">
+            <summary>
+            We-use the remote info as: accountName = awsAccessKeyId and accountKey = awsSecretAccessKey
+            </summary>
+            <param name="remoteInfo"></param>
+            <param name="bucket"></param>
+            <param name="syncDirection"></param>
+            <param name="compressionType"></param>
+            <param name="encryptionType"></param>
+            <param name="encryptionKey"></param>
+            <param name="initializationVector"></param>
+        </member>
+        <member name="M:HomeOS.Hub.Common.Bolt.DataStore.IChunk.GetCurrentChunkList(System.String)">
+            <summary>
+            For the given file return a list of (chunk-index, chunkInfo) tuples ; chunk-indices start at 0
+            </summary>
+            <param name="filePath"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
