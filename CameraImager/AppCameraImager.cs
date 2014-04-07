@@ -180,6 +180,7 @@ namespace HomeOS.Hub.Apps.CameraImager
 
         public override void OnNotification(string roleName, string opName, IList<VParamType> retVals, VPort senderPort)
         {
+
             if (registeredCameras.ContainsKey(senderPort))
             {
                 if (retVals.Count >= 1 && retVals[0].Value() != null)
@@ -190,10 +191,8 @@ namespace HomeOS.Hub.Apps.CameraImager
                     {
                         registeredCameras[senderPort].LastImageBytes = imageBytes;
 
-                        if (registeredCameras[senderPort].RecordVideo ||
-                            registeredCameras[senderPort].EnableObjectTrigger)
+                        if (registeredCameras[senderPort].RecordVideo)
                         {
-                            bool addFrame = false;
                             Rectangle rectObject = new Rectangle(0, 0, 0, 0);
                             MemoryStream stream = new MemoryStream(imageBytes);
                             Bitmap image = null;
@@ -215,54 +214,11 @@ namespace HomeOS.Hub.Apps.CameraImager
                                 return;
                             }
 
-                            // stop if needed
-                            StopRecording(senderPort, false /* force*/);
-
-                            //// if recording is underway don't bother that, it will stop after that clip time lapses
-                            //// if recording needs to be done only on motion (object) triggers, check with the result of the object
-                            //// detector above
-                            //if (registeredCameras[senderPort].RecordVideo)
-                            //{
-                            //    //if record video is still true, see if we need to add his frame
-                            //    if (registeredCameras[senderPort].VideoWriter != null || !registeredCameras[senderPort].EnableObjectTrigger)
-                            //    {
-                            //        addFrame = true;
-                            //    }
-                            //    else
-                            //    {
-                            //        if (registeredCameras[senderPort].ObjectFound)
-                            //            addFrame = true;
-                            //    }
-                            //}
-
-                            if (registeredCameras[senderPort].RecordVideo)
-                            {
-                                addFrame = true;
-                            }
-                            else
-                            {
-                                if (registeredCameras[senderPort].EnableObjectTrigger &&
-                                    registeredCameras[senderPort].ObjectFound)
-                                    addFrame = true;
-                            }
-
-                            if (addFrame)
-                            {
-
-                                StartRecording(senderPort, image.Width, image.Height, VIDEO_FPS_NUM, VIDEO_FPS_DEN, VIDEO_ENC_FRAMERATE);
-
-                                long sampleTime = (DateTime.Now - registeredCameras[senderPort].CurrVideoStartTime).Ticks;
-
-                                AddFrameToVideo(image, senderPort, sampleTime);
-
-                                if (registeredCameras[senderPort].ObjectFound)
-                                {
-                                    registeredCameras[senderPort].ObjectFound = false;
-                                    rectObject = registeredCameras[senderPort].LastObjectRect;
-                                    WriteObjectImage(senderPort, image, rectObject, true /* center */);
-                                }
-
-                            }
+                            string fileName2 = GetMediaFileName(senderPort.GetInfo().GetFriendlyName(), MediaType.MediaType_Image_JPEG);
+                            
+                            if(fileName2 != null)
+                                image.Save(fileName2);
+                            registeredCameras[senderPort].RecordVideo = false;
                         }
                     }
                 }
@@ -399,7 +355,7 @@ namespace HomeOS.Hub.Apps.CameraImager
         {
             string directory = String.Format("{0}\\{1}", this.imagesDir, cameraFriendlyName);
 
-            string[] fileArray = Directory.GetFiles(directory, "*.mp4", SearchOption.AllDirectories);
+            string[] fileArray = Directory.GetFiles(directory, "*.jpg", SearchOption.AllDirectories);
             return fileArray.GetLength(0);
         }
 
@@ -426,7 +382,7 @@ namespace HomeOS.Hub.Apps.CameraImager
 
             try
             {
-                fileArray = Directory.GetFiles(directory, "*.mp4", SearchOption.AllDirectories);
+                fileArray = Directory.GetFiles(directory, "*.jpg", SearchOption.AllDirectories);
             }
             catch (Exception)
             {

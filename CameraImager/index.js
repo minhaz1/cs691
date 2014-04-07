@@ -122,10 +122,8 @@ function GetWebImageCallback(context, result) {
 function RecordToggle() {
 
     if (g_isRecording == false) {
-        $('#recordBTN').attr('src', "Assets/MetroStop.png");
-        $('#recordText').html("Recording");
-        g_isRecording = true;
         StartRecord();
+        StopRecord();
     }
     else {
         $('#recordBTN').attr('src', "Assets/MetroRecord.png");
@@ -195,7 +193,7 @@ function GetRecordedClipsCallback(context, result) {
 
             //  $("#videoClips").append('<div>Screen width' + screen.width + ':' + screen.availWidth + ':' + window.innerWidth + '</div>');
             if (screen.width > 770)  //not on smart phone - smart phones are giving us trouble with showing video
-                $("#videoClips").append('<div><video class="snapshot_image col"  src="' + result[i] + '" controls="controls" /></div>');
+                $("#videoClips").append('<div><img class="snapshot_image col"  src="' + result[i] + '" controls="controls" /></div>');
             else {
                 $("#videoClips").append('<div><a href="' + result[i] + '">Recording: ' + i + '</a></div>');
                 //$("#videoClips").append('<div class="snapshot_image col"><a href="' + result[i] + '"><img src ="Assets/poster-image.png" /></a></div>');  //Maybe add something like this in remote case: preload="none"  poster="Assets/poster-image.png"
